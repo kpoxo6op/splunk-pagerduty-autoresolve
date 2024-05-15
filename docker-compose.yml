@@ -1,0 +1,28 @@
+services:
+  splunk:
+    image: splunk/splunk:latest
+    container_name: splunk
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_ENABLE_LISTEN=9997
+      # - SPLUNK_USER=admin
+      - SPLUNK_PASSWORD=changeme123
+    ports:
+      - "8000:8000" # Splunk Web Interface
+      - "8088:8088" # HTTP Event Collector
+      - "8089:8089" # Splunk REST API
+      - "9997:9997" # Splunk Forwarder
+      - "1514:1514" # Syslog
+    volumes:
+      - splunk-data:/opt/splunk/var
+      - splunk-etc:/opt/splunk/etc
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -u admin:changeme123 -f https://localhost:8089/services/server/info --insecure || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+volumes:
+  splunk-data:
+  splunk-etc:
