@@ -44,7 +44,7 @@ resource "splunk_saved_searches" "search" {
   actions = "pagerduty"
   action_pagerduty_integration_url = "https://events.pagerduty.com/integration/92348d67ea9f4b0ed01008c8b440f353/enqueue"
   action_pagerduty_integration_url_override = "https://events.pagerduty.com/integration/92348d67ea9f4b0ed01008c8b440f353/enqueue"
-  action_pagerduty_custom_details = "{\"action\": \"$event_action$\"}"
+  action_pagerduty_custom_details = "{\"action\": \"$result.event_action$\"}"
   cron_schedule = "*/5 * * * *"
   alert_condition = "search count > 10"
   description = "Resolvable PagerDuty Alert Demo"
@@ -74,3 +74,10 @@ resource "splunk_configs_conf" "kvstore-transforms-stanza" {
     "fields_list"   : "_key,event_action,date_last_change,date_last_run"
   }
 }
+
+/*
+resource pagerduty service
+
+resource pagerduty service integration
+
+*/
