@@ -15,15 +15,18 @@ provider "splunk" {
 }
 
 resource "splunk_saved_searches" "search" {
-  name   = "Some System Errors"
+  name   = "Boris As Code Errors"
   search = <<-EOT
-    | makeresults count=0
+    | makeresults count=1
+    | eval random_number=random() % 2
+    | appendpipe [| makeresults count=100 | where random_number == 1]
+    | where random_number == 1
     | stats count as event_count
     | eval event_action=case(
         event_count>0, "trigger",
         1=1, "resolve"
       )
-    | eval _key="some_system_error_rate_dev"
+    | eval _key="boris_as_code_error_rate"
     | eval date_last_run=now()
     | join type=left _key
         [| inputlookup state_alert
@@ -40,17 +43,13 @@ resource "splunk_saved_searches" "search" {
   EOT
   actions = "pagerduty"
   action_pagerduty_integration_url = "https://events.pagerduty.com/integration/92348d67ea9f4b0ed01008c8b440f353/enqueue"
-  action_pagerduty_integration_key = "92348d67ea9f4b0ed01008c8b440f353"
+  action_pagerduty_integration_url_override = "https://events.pagerduty.com/integration/92348d67ea9f4b0ed01008c8b440f353/enqueue"
+  action_pagerduty_custom_details = "{\"action\": \"$event_action$\"}"
   cron_schedule = "*/5 * * * *"
+  alert_condition = "search count > 10"
+  description = "Resolvable PagerDuty Alert Demo"
+  is_scheduled = true
 }
-
-# No such file or directory
-# resource "splunk_apps_local" "pagerduty_app" {
-#   filename = true
-#   name = "./pagerduty-app-for-splunk_404.tgz"
-#   explicit_appname = "pagerduty_incidents"
-# }
-
 
 # http://localhost:8000/en-GB/debug/refresh
 # https://dev.splunk.com/enterprise/docs/developapps/manageknowledge/kvstore/usingconfigurationfiles/#:~:text=After%20modifying%20the%20collections.conf%20file%2C%20you%20must%20reload%20the%20configuration%20file%20by%20navigating%20to%20http%3A//localhost%3A8000/debug/refresh
