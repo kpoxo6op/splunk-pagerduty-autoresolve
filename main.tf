@@ -43,12 +43,9 @@ resource "splunk_saved_searches" "search" {
   EOT
   actions = "pagerduty"
   action_pagerduty_integration_url = "https://events.pagerduty.com/integration/92348d67ea9f4b0ed01008c8b440f353/enqueue"
-  action_pagerduty_integration_url_override = "https://events.pagerduty.com/integration/92348d67ea9f4b0ed01008c8b440f353/enqueue"
-  action_pagerduty_custom_details = "{\"action\": \"$result.event_action$\"}"
   cron_schedule = "*/5 * * * *"
   alert_condition = "search count > 10"
   description = "Resolvable PagerDuty Alert Demo"
-  is_scheduled = true
 }
 
 # http://localhost:8000/en-GB/debug/refresh
