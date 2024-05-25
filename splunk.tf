@@ -1,70 +1,3 @@
-terraform {
-  required_providers {
-    splunk = {
-      source  = "splunk/splunk"
-      version = "1.4.22"
-    }
-    pagerduty = {
-      source  = "pagerduty/pagerduty"
-      version = ">= 2.2.1"
-    }
-  }
-}
-
-provider "splunk" {
-  url                  = "localhost:8089"
-  username             = "admin"
-  password             = "abcd1234"
-  insecure_skip_verify = true
-}
-
-provider "pagerduty" {
-  token = "u+7JZYRUsmEcTkKwstYg"
-}
-
-data "pagerduty_service" "default" {
-  name = "Default Service"
-}
-
-resource "pagerduty_event_orchestration" "resolve" {
-  name        = "Resolve Splunk alerts"
-  description = "Resolve Splunk alerts by looking into message custom_details"
-}
-
-resource "pagerduty_event_orchestration_router" "default_router" {
-  event_orchestration = pagerduty_event_orchestration.resolve.id
-  set {
-    id = "start"
-  }
-  catch_all {
-    actions {
-      route_to = data.pagerduty_service.default.id
-    }
-  }
-}
-
-resource "pagerduty_event_orchestration_service" "resolve" {
-  service = data.pagerduty_service.default.id
-  set {
-    id = "start"
-    rule {
-      label = "Autotoresolve Splunk Alerts"
-      condition {
-        expression = "event.custom_details.event_action matches 'resolve'"
-      }
-      actions {
-        event_action = "resolve"
-      }
-    }
-  }
-
-  catch_all {
-    actions {
-
-    }
-  }
-}
-
 resource "splunk_saved_searches" "search" {
   name   = "Boris As Code Errors"
   search = <<-EOT
@@ -101,9 +34,6 @@ resource "splunk_saved_searches" "search" {
   # action_pagerduty_custom_details = "{\"action\": \"$result.event_action$\"}"
 }
 
-# http://localhost:8000/en-GB/debug/refresh
-# https://dev.splunk.com/enterprise/docs/developapps/manageknowledge/kvstore/usingconfigurationfiles/#:~:text=After%20modifying%20the%20collections.conf%20file%2C%20you%20must%20reload%20the%20configuration%20file%20by%20navigating%20to%20http%3A//localhost%3A8000/debug/refresh
-
 resource "splunk_configs_conf" "kvstore-collections-stanza" {
   # /opt/splunk/etc/apps/search/local/collections.conf
   name = "collections/state_alert"
@@ -124,11 +54,3 @@ resource "splunk_configs_conf" "kvstore-transforms-stanza" {
     "fields_list" : "_key,event_action,date_last_change,date_last_run"
   }
 }
-
-# pagerduty
-/*
-resource pagerduty service
-
-resource pagerduty service integration
-
-*/
