@@ -21,7 +21,7 @@ resource "splunk_configs_conf" "kvstore-transforms-stanza" {
 
 resource "splunk_configs_conf" "alert" {
   # /opt/splunk/etc/apps/search/local/savedsearches.conf
-  name = "savedsearches/Reolsavle Splunk Alert Demo"
+  name = "savedsearches/Resolvable Splunk Alert Demo"
   variables = {
     "action.pagerduty"                                = "1"
     "action.pagerduty.param.custom_details"           = "{\"action\": \"$result.event_action$\"}"
@@ -33,11 +33,12 @@ resource "splunk_configs_conf" "alert" {
     "alert.suppress.fields"                           = "*"
     "alert.suppress.period"                           = "60s"
     "alert.track"                                     = "1"
+    "counttype"                                       = "number of events"
     "cron_schedule"                                   = "* * * * *"
     "description"                                     = "Boris As Code Errors Alert resolvable by PagerDuty"
-    "dispatch.earliest_time"                          = "rt"
+    "dispatch.earliest_time"                          = "-15m"
     "dispatch.indexedRealtime"                        = "0"
-    "dispatch.latest_time"                            = "rt"
+    "dispatch.latest_time"                            = "now"
     "dispatch.lookups"                                = "0"
     "dispatch.spawn_process"                          = "0"
     "display.general.type"                            = "statistics"
