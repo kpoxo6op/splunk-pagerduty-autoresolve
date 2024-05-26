@@ -29,5 +29,3 @@ curl -k -u $CREDS -X DELETE $BASE_URL/configs/conf-transforms/state_alert
 # Splunk config reload required
 # http://localhost:8000/en-GB/debug/refresh
 ```
-
-# 
