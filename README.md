@@ -23,6 +23,8 @@ curl -k -u $CREDS $BASE_URL/storage/collections/data/$COLLECTION | jq
 
 # Delete
 curl -k -u $CREDS -X DELETE $BASE_URL/storage/collections/data/$COLLECTION
+curl -k -u $CREDS -X DELETE $BASE_URL/storage/collections/config/$COLLECTION
+curl -k -u $CREDS -X DELETE $BASE_URL/configs/conf-transforms/state_alert
 
 # Splunk config reload required
 # http://localhost:8000/en-GB/debug/refresh
