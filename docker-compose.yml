@@ -6,7 +6,7 @@ services:
     environment:
       SPLUNK_START_ARGS: "--accept-license --no-prompt"
       SPLUNK_HEC_TOKEN: "xyz789"
-      SPLUNK_PASSWORD: "abcd1234"
+      SPLUNK_PASSWORD: "${TF_VAR_splunk_password}"
     ports:
       - "8000:8000" # GUI
       - "8088:8088" # HTTP Event Collector (HEC)

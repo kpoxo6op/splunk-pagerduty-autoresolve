@@ -24,7 +24,6 @@ resource "splunk_configs_conf" "alert" {
   name = "savedsearches/Resolvable Splunk Alert Demo"
   variables = {
     "action.pagerduty"                                = "1"
-    "action.pagerduty.param.custom_details"           = "{\"action\": \"$result.event_action$\"}"
     "action.pagerduty.param.integration_key_override" = pagerduty_service_integration.splunk.integration_key
     "action.summary_index.inline"                     = "0"
     "action.webhook.enable_allowlist"                 = "0"
