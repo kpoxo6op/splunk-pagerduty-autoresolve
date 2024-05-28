@@ -34,7 +34,7 @@ resource "pagerduty_event_orchestration_service" "resolve" {
   set {
     id = "start"
     rule {
-      label = "Autotoresolve Splunk Alerts"
+      label = "Autoresolve Splunk Alerts"
       condition {
         expression = "event.custom_details.event_action matches 'resolve'"
       }
